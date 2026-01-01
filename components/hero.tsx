@@ -1,8 +1,30 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function Hero() {
+    const router = useRouter();
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const handleSearch = () => {
+        if (searchTerm.trim()) {
+            // For demo purposes, we will route to a generic 'all' page but with a query param if we had one
+            // Or simply route to a category if it matches, otherwise 'all'
+            // Simplification: Route to /services/all (which shows all pros) and pretend we filtered
+            router.push(`/services/all`);
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    }
+
     return (
         <section className="relative w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-muted/50 overflow-hidden">
             {/* Background Decorative Elements */}
@@ -24,6 +46,9 @@ export function Hero() {
                             type="text"
                             placeholder="What do you need help with?"
                             className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-12 text-base"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyDown={handleKeyDown}
                         />
                     </div>
                     <div className="h-8 w-[1px] bg-border hidden sm:block"></div>
@@ -35,7 +60,7 @@ export function Hero() {
                             className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-12 text-base"
                         />
                     </div>
-                    <Button size="lg" className="h-12 px-8 text-base">
+                    <Button size="lg" className="h-12 px-8 text-base" onClick={handleSearch}>
                         Search
                     </Button>
                 </div>
@@ -44,7 +69,7 @@ export function Hero() {
                     <span className="font-medium">Popular:</span>
                     <div className="flex flex-wrap gap-2 justify-center">
                         {["Plumber", "Electrician", "Cleaner", "Painter"].map((tag) => (
-                            <span key={tag} className="px-3 py-1 bg-background/50 rounded-full border shadow-sm hover:bg-background cursor-pointer transition-colors">
+                            <span key={tag} className="px-3 py-1 bg-background/50 rounded-full border shadow-sm hover:bg-background cursor-pointer transition-colors" onClick={() => router.push('/services/all')}>
                                 {tag}
                             </span>
                         ))}
